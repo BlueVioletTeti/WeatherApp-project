@@ -353,6 +353,8 @@ function determineSearchLocationTempC(location) {
   let search = document.querySelector("#searchInput");
   if (search.value !== "") {
     location = search.value;
+  } else {
+    location = location1;
   }
   let unitMetric = document.querySelector("#unit");
   unitMetric.innerHTML = `m/s`;
@@ -365,6 +367,8 @@ function determineSearchLocationTempF(location) {
   let search = document.querySelector("#searchInput");
   if (search.value !== "") {
     location = search.value;
+  } else {
+    location = location1;
   }
   let apiKey = "0774011ae8c6615118624b282251a3f1";
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=${apiKey}`;
@@ -379,35 +383,26 @@ function citySearchEvent(event) {
 function showCurrentLocationEvent(event) {
   event.preventDefault();
   window.currentLocationState = true;
+  document.querySelector("#celsius").focus();
   navigator.geolocation.getCurrentPosition(determineCurrentLocationTempC);
 }
 
 function changeCforF(event) {
   event.preventDefault();
-  let search = document.querySelector("#searchInput");
-  if (search.value !== "") {
+  if (window.currentLocationState === false) {
     navigator.geolocation.getCurrentPosition(determineSearchLocationTempF);
-  } else if (window.currentLocationState === true) {
-    navigator.geolocation.getCurrentPosition(determineCurrentLocationTempF);
   } else {
-    navigator.geolocation.getCurrentPosition(
-      determineSearchLocationTempF(location1)
-    );
+    navigator.geolocation.getCurrentPosition(determineCurrentLocationTempF);
   }
   let unitImperial = document.querySelector("#unit");
   unitImperial.innerHTML = `mi/h`;
 }
 function changeFforC(event) {
   event.preventDefault();
-  let search = document.querySelector("#searchInput");
-  if (search.value !== "") {
+  if (window.currentLocationState === false) {
     navigator.geolocation.getCurrentPosition(determineSearchLocationTempC);
-  } else if (window.currentLocationState === true) {
-    navigator.geolocation.getCurrentPosition(determineCurrentLocationTempC);
   } else {
-    navigator.geolocation.getCurrentPosition(
-      determineSearchLocationTempC(location1)
-    );
+    navigator.geolocation.getCurrentPosition(determineCurrentLocationTempC);
   }
   let unitMetric = document.querySelector("#unit");
   unitMetric.innerHTML = `m/s`;
@@ -438,4 +433,5 @@ c.addEventListener("click", changeFforC);
 
 //Default location
 var location1 = "Kyiv";
+window.currentLocationState = false;
 determineSearchLocationTempC(location1);
